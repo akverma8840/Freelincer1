@@ -174,6 +174,17 @@ async def get_categories():
     categories = await db.menu_items.aggregate(pipeline).to_list(1000)
     return [{"name": cat["_id"], "count": cat["count"]} for cat in categories]
 
+@api_router.get("/site-settings", response_model=SiteSettings)
+async def get_site_settings():
+    settings = await db.site_settings.find_one({})
+    if settings:
+        return SiteSettings(**settings)
+    else:
+        # Return default settings if none exist
+        default_settings = SiteSettings()
+        await db.site_settings.insert_one(default_settings.dict())
+        return default_settings
+
 # Authentication Routes
 @api_router.post("/auth/login", response_model=Token)
 async def login(admin_data: AdminLogin):
