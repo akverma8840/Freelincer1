@@ -263,6 +263,34 @@ async def update_site_settings(settings_update: SiteSettingsUpdate, current_user
     updated_settings = await db.site_settings.find_one({})
     return SiteSettings(**updated_settings)
 
+@api_router.put("/admin/change-password")
+async def change_admin_password(password_data: AdminPasswordChange, current_user: str = Depends(get_current_user)):
+    # Validate passwords match
+    if password_data.new_password != password_data.confirm_password:
+        raise HTTPException(status_code=400, detail="New passwords do not match")
+    
+    # Validate password length
+    if len(password_data.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+    
+    # Get current admin user
+    admin_user = await db.admin_users.find_one({"username": current_user})
+    if not admin_user:
+        raise HTTPException(status_code=404, detail="Admin user not found")
+    
+    # Verify current password
+    if not verify_password(password_data.current_password, admin_user["hashed_password"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Update password
+    new_hashed_password = get_password_hash(password_data.new_password)
+    await db.admin_users.update_one(
+        {"username": current_user},
+        {"$set": {"hashed_password": new_hashed_password}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
