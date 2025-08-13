@@ -94,7 +94,7 @@ const Hero = ({ siteSettings }) => {
   );
 };
 
-const MenuSection = () => {
+const MenuSection = ({ siteSettings }) => {
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -145,8 +145,8 @@ const MenuSection = () => {
     <section id="menu" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Our Menu</h2>
-          <p className="text-lg text-gray-600">Crafted with the finest ingredients and culinary expertise</p>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">{siteSettings?.menu_title || "Our Menu"}</h2>
+          <p className="text-lg text-gray-600">{siteSettings?.menu_description || "Crafted with the finest ingredients and culinary expertise"}</p>
         </div>
 
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
