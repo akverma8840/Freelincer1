@@ -230,6 +230,34 @@ async def delete_menu_item(item_id: str, current_user: str = Depends(get_current
         raise HTTPException(status_code=404, detail="Menu item not found")
     return {"message": "Menu item deleted successfully"}
 
+@api_router.get("/admin/site-settings", response_model=SiteSettings)
+async def get_admin_site_settings(current_user: str = Depends(get_current_user)):
+    settings = await db.site_settings.find_one({})
+    if settings:
+        return SiteSettings(**settings)
+    else:
+        # Return default settings if none exist
+        default_settings = SiteSettings()
+        await db.site_settings.insert_one(default_settings.dict())
+        return default_settings
+
+@api_router.put("/admin/site-settings", response_model=SiteSettings)
+async def update_site_settings(settings_update: SiteSettingsUpdate, current_user: str = Depends(get_current_user)):
+    existing_settings = await db.site_settings.find_one({})
+    
+    if not existing_settings:
+        # Create default settings if none exist
+        default_settings = SiteSettings()
+        await db.site_settings.insert_one(default_settings.dict())
+        existing_settings = default_settings.dict()
+    
+    update_data = {k: v for k, v in settings_update.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.site_settings.update_one({}, {"$set": update_data})
+    updated_settings = await db.site_settings.find_one({})
+    return SiteSettings(**updated_settings)
+
 # Include the router in the main app
 app.include_router(api_router)
 
