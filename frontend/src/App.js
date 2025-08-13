@@ -50,14 +50,14 @@ const AuthProvider = ({ children }) => {
 const useAuth = () => React.useContext(AuthContext);
 
 // Components
-const Navbar = () => {
+const Navbar = ({ siteSettings }) => {
   return (
     <nav className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <ChefHat className="h-8 w-8 text-orange-600" />
-            <span className="text-2xl font-bold text-gray-800">Gourmet Catering</span>
+            <span className="text-2xl font-bold text-gray-800">{siteSettings?.business_name || "Gourmet Catering"}</span>
           </div>
           <div className="hidden md:flex space-x-6">
             <a href="#home" className="text-gray-600 hover:text-orange-600 transition-colors">Home</a>
