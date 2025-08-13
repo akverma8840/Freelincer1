@@ -944,6 +944,72 @@ const AdminPanel = () => {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Password Change Dialog */}
+        <Dialog open={showPasswordForm} onOpenChange={setShowPasswordForm}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Change Admin Password</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="current_password">Current Password</Label>
+                <Input
+                  id="current_password"
+                  type="password"
+                  value={passwordData.current_password}
+                  onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})}
+                  required
+                  placeholder="Enter your current password"
+                />
+              </div>
+              <div>
+                <Label htmlFor="new_password">New Password</Label>
+                <Input
+                  id="new_password"
+                  type="password"
+                  value={passwordData.new_password}
+                  onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})}
+                  required
+                  minLength={6}
+                  placeholder="Enter new password (min 6 characters)"
+                />
+              </div>
+              <div>
+                <Label htmlFor="confirm_password">Confirm New Password</Label>
+                <Input
+                  id="confirm_password"
+                  type="password"
+                  value={passwordData.confirm_password}
+                  onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})}
+                  required
+                  minLength={6}
+                  placeholder="Confirm new password"
+                />
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
+                <p className="text-sm text-yellow-800">
+                  <strong>Note:</strong> You will be logged out after changing your password and will need to login again.
+                </p>
+              </div>
+              <div className="flex space-x-2">
+                <Button type="submit" className="flex-1">
+                  Change Password
+                </Button>
+                <Button type="button" variant="outline" onClick={() => {
+                  setShowPasswordForm(false);
+                  setPasswordData({
+                    current_password: '',
+                    new_password: '',
+                    confirm_password: ''
+                  });
+                }}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
