@@ -396,6 +396,11 @@ const AdminPanel = () => {
     contact_address2: '',
     footer_text: ''
   });
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
   const { logout, token } = useAuth();
 
   useEffect(() => {
