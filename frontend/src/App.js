@@ -369,6 +369,7 @@ const AdminPanel = () => {
   const [siteSettings, setSiteSettings] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showContentForm, setShowContentForm] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [activeTab, setActiveTab] = useState('menu');
   const [formData, setFormData] = useState({
