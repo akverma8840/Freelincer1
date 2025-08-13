@@ -47,6 +47,40 @@ class MenuItem(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
+class SiteSettings(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    business_name: str = "Gourmet Catering"
+    hero_title: str = "Exquisite Catering Services"
+    hero_description: str = "Creating unforgettable culinary experiences for your special events. From intimate gatherings to grand celebrations, we bring gourmet flavors to your table."
+    menu_title: str = "Our Menu"
+    menu_description: str = "Crafted with the finest ingredients and culinary expertise"
+    about_title: str = "About Gourmet Catering"
+    about_description: str = "With over 15 years of culinary excellence, we specialize in creating memorable dining experiences that perfectly complement your special occasions. Our team of expert chefs combines traditional techniques with modern flavors to deliver exceptional catering services."
+    contact_phone1: str = "(555) 123-4567"
+    contact_phone2: str = "(555) 987-6543"
+    contact_email1: str = "info@gourmetcatering.com"
+    contact_email2: str = "orders@gourmetcatering.com"
+    contact_address1: str = "123 Culinary Street"
+    contact_address2: str = "Foodie City, FC 12345"
+    footer_text: str = "© 2024 Gourmet Catering. All rights reserved."
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class SiteSettingsUpdate(BaseModel):
+    business_name: Optional[str] = None
+    hero_title: Optional[str] = None
+    hero_description: Optional[str] = None
+    menu_title: Optional[str] = None
+    menu_description: Optional[str] = None
+    about_title: Optional[str] = None
+    about_description: Optional[str] = None
+    contact_phone1: Optional[str] = None
+    contact_phone2: Optional[str] = None
+    contact_email1: Optional[str] = None
+    contact_email2: Optional[str] = None
+    contact_address1: Optional[str] = None
+    contact_address2: Optional[str] = None
+    footer_text: Optional[str] = None
+
 class MenuItemCreate(BaseModel):
     name: str
     description: str
