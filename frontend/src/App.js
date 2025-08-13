@@ -71,16 +71,15 @@ const Navbar = ({ siteSettings }) => {
   );
 };
 
-const Hero = () => {
+const Hero = ({ siteSettings }) => {
   return (
     <section id="home" className="bg-gradient-to-br from-orange-50 to-amber-50 py-20">
       <div className="container mx-auto px-4 text-center">
         <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
-          Exquisite Catering <span className="text-orange-600">Services</span>
+          {siteSettings?.hero_title || "Exquisite Catering Services"}
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-          Creating unforgettable culinary experiences for your special events. From intimate gatherings 
-          to grand celebrations, we bring gourmet flavors to your table.
+          {siteSettings?.hero_description || "Creating unforgettable culinary experiences for your special events. From intimate gatherings to grand celebrations, we bring gourmet flavors to your table."}
         </p>
         <div className="flex justify-center space-x-4">
           <Button size="lg" className="bg-orange-600 hover:bg-orange-700">
