@@ -448,6 +448,42 @@ const AdminPanel = () => {
     }
   };
 
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      alert('New passwords do not match!');
+      return;
+    }
+    
+    if (passwordData.new_password.length < 6) {
+      alert('Password must be at least 6 characters long!');
+      return;
+    }
+    
+    try {
+      await axios.put(`${API}/admin/change-password`, passwordData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setShowPasswordForm(false);
+      setPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: ''
+      });
+      alert('Password changed successfully! Please login again with your new password.');
+      logout(); // Force re-login with new password
+    } catch (error) {
+      console.error('Error changing password:', error);
+      if (error.response?.data?.detail) {
+        alert(`Error: ${error.response.data.detail}`);
+      } else {
+        alert('Error changing password');
+      }
+    }
+  };
+
   const startContentEdit = () => {
     setContentData(siteSettings);
     setShowContentForm(true);
