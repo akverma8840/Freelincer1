@@ -111,6 +111,11 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+class AdminPasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+    confirm_password: str
+
 # Utility functions
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
