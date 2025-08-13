@@ -885,14 +885,29 @@ const AdminPanel = () => {
 
 // Main App
 const HomePage = () => {
+  const [siteSettings, setSiteSettings] = useState(null);
+
+  useEffect(() => {
+    fetchSiteSettings();
+  }, []);
+
+  const fetchSiteSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/site-settings`);
+      setSiteSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching site settings:', error);
+    }
+  };
+
   return (
     <div>
-      <Navbar />
-      <Hero />
-      <MenuSection />
-      <AboutSection />
-      <ContactSection />
-      <Footer />
+      <Navbar siteSettings={siteSettings} />
+      <Hero siteSettings={siteSettings} />
+      <MenuSection siteSettings={siteSettings} />
+      <AboutSection siteSettings={siteSettings} />
+      <ContactSection siteSettings={siteSettings} />
+      <Footer siteSettings={siteSettings} />
     </div>
   );
 };
