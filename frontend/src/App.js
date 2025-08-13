@@ -202,17 +202,15 @@ const MenuSection = ({ siteSettings }) => {
   );
 };
 
-const AboutSection = () => {
+const AboutSection = ({ siteSettings }) => {
   return (
     <section id="about" className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-6">About Gourmet Catering</h2>
+            <h2 className="text-4xl font-bold text-gray-800 mb-6">{siteSettings?.about_title || "About Gourmet Catering"}</h2>
             <p className="text-lg text-gray-600 mb-6">
-              With over 15 years of culinary excellence, we specialize in creating memorable dining experiences 
-              that perfectly complement your special occasions. Our team of expert chefs combines traditional 
-              techniques with modern flavors to deliver exceptional catering services.
+              {siteSettings?.about_description || "With over 15 years of culinary excellence, we specialize in creating memorable dining experiences that perfectly complement your special occasions. Our team of expert chefs combines traditional techniques with modern flavors to deliver exceptional catering services."}
             </p>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center space-x-2">
