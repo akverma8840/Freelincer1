@@ -247,7 +247,7 @@ const AboutSection = ({ siteSettings }) => {
   );
 };
 
-const ContactSection = () => {
+const ContactSection = ({ siteSettings }) => {
   return (
     <section id="contact" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -260,22 +260,22 @@ const ContactSection = () => {
           <Card className="text-center p-6">
             <Phone className="h-12 w-12 text-orange-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Call Us</h3>
-            <p className="text-gray-600">(555) 123-4567</p>
-            <p className="text-gray-600">(555) 987-6543</p>
+            <p className="text-gray-600">{siteSettings?.contact_phone1 || "(555) 123-4567"}</p>
+            <p className="text-gray-600">{siteSettings?.contact_phone2 || "(555) 987-6543"}</p>
           </Card>
 
           <Card className="text-center p-6">
             <Mail className="h-12 w-12 text-orange-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Email Us</h3>
-            <p className="text-gray-600">info@gourmetcatering.com</p>
-            <p className="text-gray-600">orders@gourmetcatering.com</p>
+            <p className="text-gray-600">{siteSettings?.contact_email1 || "info@gourmetcatering.com"}</p>
+            <p className="text-gray-600">{siteSettings?.contact_email2 || "orders@gourmetcatering.com"}</p>
           </Card>
 
           <Card className="text-center p-6">
             <MapPin className="h-12 w-12 text-orange-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Visit Us</h3>
-            <p className="text-gray-600">123 Culinary Street</p>
-            <p className="text-gray-600">Foodie City, FC 12345</p>
+            <p className="text-gray-600">{siteSettings?.contact_address1 || "123 Culinary Street"}</p>
+            <p className="text-gray-600">{siteSettings?.contact_address2 || "Foodie City, FC 12345"}</p>
           </Card>
         </div>
       </div>
