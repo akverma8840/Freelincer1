@@ -514,9 +514,10 @@ const AdminPanel = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mb-8">
+          <TabsList className="grid w-full grid-cols-3 max-w-lg mb-8">
             <TabsTrigger value="menu">Menu Management</TabsTrigger>
             <TabsTrigger value="content">Website Content</TabsTrigger>
+            <TabsTrigger value="security">Security</TabsTrigger>
           </TabsList>
 
           <TabsContent value="menu">
