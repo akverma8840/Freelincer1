@@ -283,17 +283,17 @@ const ContactSection = ({ siteSettings }) => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ siteSettings }) => {
   return (
     <footer className="bg-gray-800 text-white py-8">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <ChefHat className="h-6 w-6 text-orange-600" />
-            <span className="text-xl font-bold">Gourmet Catering</span>
+            <span className="text-xl font-bold">{siteSettings?.business_name || "Gourmet Catering"}</span>
           </div>
           <p className="text-gray-400">
-            © 2024 Gourmet Catering. All rights reserved.
+            {siteSettings?.footer_text || "© 2024 Gourmet Catering. All rights reserved."}
           </p>
         </div>
       </div>
