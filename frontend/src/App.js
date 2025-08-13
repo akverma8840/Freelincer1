@@ -602,7 +602,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route 
               path="/admin" 
               element={
@@ -621,6 +621,16 @@ function App() {
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/admin/login" replace />;
+};
+
+const AdminLoginPage = () => {
+  const { isAuthenticated } = useAuth();
+  
+  if (isAuthenticated) {
+    return <Navigate to="/admin" replace />;
+  }
+  
+  return <AdminLogin />;
 };
 
 export default App;
