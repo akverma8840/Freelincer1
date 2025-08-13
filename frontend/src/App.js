@@ -366,8 +366,11 @@ const AdminLogin = () => {
 
 const AdminPanel = () => {
   const [menuItems, setMenuItems] = useState([]);
+  const [siteSettings, setSiteSettings] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showContentForm, setShowContentForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [activeTab, setActiveTab] = useState('menu');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -376,10 +379,27 @@ const AdminPanel = () => {
     available: true,
     image_url: ''
   });
+  const [contentData, setContentData] = useState({
+    business_name: '',
+    hero_title: '',
+    hero_description: '',
+    menu_title: '',
+    menu_description: '',
+    about_title: '',
+    about_description: '',
+    contact_phone1: '',
+    contact_phone2: '',
+    contact_email1: '',
+    contact_email2: '',
+    contact_address1: '',
+    contact_address2: '',
+    footer_text: ''
+  });
   const { logout, token } = useAuth();
 
   useEffect(() => {
     fetchAdminMenu();
+    fetchSiteSettings();
   }, []);
 
   const fetchAdminMenu = async () => {
@@ -391,6 +411,40 @@ const AdminPanel = () => {
     } catch (error) {
       console.error('Error fetching admin menu:', error);
     }
+  };
+
+  const fetchSiteSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/site-settings`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSiteSettings(response.data);
+      setContentData(response.data);
+    } catch (error) {
+      console.error('Error fetching site settings:', error);
+    }
+  };
+
+  const handleContentSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      await axios.put(`${API}/admin/site-settings`, contentData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setShowContentForm(false);
+      fetchSiteSettings();
+      alert('Website content updated successfully!');
+    } catch (error) {
+      console.error('Error updating site settings:', error);
+      alert('Error updating website content');
+    }
+  };
+
+  const startContentEdit = () => {
+    setContentData(siteSettings);
+    setShowContentForm(true);
   };
 
   const handleSubmit = async (e) => {
@@ -450,51 +504,139 @@ const AdminPanel = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
-            <div className="flex space-x-4">
-              <Button onClick={() => setShowAddForm(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Menu Item
-              </Button>
-              <Button variant="outline" onClick={logout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
+            <Button variant="outline" onClick={logout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid gap-6">
-          {menuItems.map(item => (
-            <Card key={item.id}>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-2">
-                      <h3 className="text-xl font-semibold">{item.name}</h3>
-                      <Badge variant={item.available ? 'default' : 'secondary'}>
-                        {item.available ? 'Available' : 'Unavailable'}
-                      </Badge>
-                      <Badge variant="outline">{item.category}</Badge>
-                    </div>
-                    <p className="text-gray-600 mb-2">{item.description}</p>
-                    <p className="text-2xl font-bold text-orange-600">${item.price}</p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => startEdit(item)}>
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleDelete(item.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 max-w-md mb-8">
+            <TabsTrigger value="menu">Menu Management</TabsTrigger>
+            <TabsTrigger value="content">Website Content</TabsTrigger>
+          </TabsList>
 
+          <TabsContent value="menu">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Menu Items</h2>
+              <Button onClick={() => setShowAddForm(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Menu Item
+              </Button>
+            </div>
+
+            <div className="grid gap-6">
+              {menuItems.map(item => (
+                <Card key={item.id}>
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-4 mb-2">
+                          <h3 className="text-xl font-semibold">{item.name}</h3>
+                          <Badge variant={item.available ? 'default' : 'secondary'}>
+                            {item.available ? 'Available' : 'Unavailable'}
+                          </Badge>
+                          <Badge variant="outline">{item.category}</Badge>
+                        </div>
+                        <p className="text-gray-600 mb-2">{item.description}</p>
+                        <p className="text-2xl font-bold text-orange-600">${item.price}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" onClick={() => startEdit(item)}>
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleDelete(item.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="content">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Website Content</h2>
+              <Button onClick={startContentEdit}>
+                <Edit2 className="h-4 w-4 mr-2" />
+                Edit Website Content
+              </Button>
+            </div>
+
+            {siteSettings && (
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Business Information</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Business Name:</strong> {siteSettings.business_name}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Title:</strong> {siteSettings.hero_title}</p>
+                    <p><strong>Description:</strong> {siteSettings.hero_description}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Menu Section</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Title:</strong> {siteSettings.menu_title}</p>
+                    <p><strong>Description:</strong> {siteSettings.menu_description}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>About Section</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Title:</strong> {siteSettings.about_title}</p>
+                    <p><strong>Description:</strong> {siteSettings.about_description}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Phone 1:</strong> {siteSettings.contact_phone1}</p>
+                    <p><strong>Phone 2:</strong> {siteSettings.contact_phone2}</p>
+                    <p><strong>Email 1:</strong> {siteSettings.contact_email1}</p>
+                    <p><strong>Email 2:</strong> {siteSettings.contact_email2}</p>
+                    <p><strong>Address 1:</strong> {siteSettings.contact_address1}</p>
+                    <p><strong>Address 2:</strong> {siteSettings.contact_address2}</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Footer</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Footer Text:</strong> {siteSettings.footer_text}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {/* Menu Item Dialog */}
         <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -566,6 +708,169 @@ const AdminPanel = () => {
                   setShowAddForm(false);
                   setEditingItem(null);
                   setFormData({ name: '', description: '', price: '', category: '', available: true, image_url: '' });
+                }}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Content Management Dialog */}
+        <Dialog open={showContentForm} onOpenChange={setShowContentForm}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Website Content</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleContentSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="business_name">Business Name</Label>
+                  <Input
+                    id="business_name"
+                    value={contentData.business_name}
+                    onChange={(e) => setContentData({...contentData, business_name: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Hero Section</h3>
+                <div>
+                  <Label htmlFor="hero_title">Hero Title</Label>
+                  <Input
+                    id="hero_title"
+                    value={contentData.hero_title}
+                    onChange={(e) => setContentData({...contentData, hero_title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="hero_description">Hero Description</Label>
+                  <Textarea
+                    id="hero_description"
+                    value={contentData.hero_description}
+                    onChange={(e) => setContentData({...contentData, hero_description: e.target.value})}
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Menu Section</h3>
+                <div>
+                  <Label htmlFor="menu_title">Menu Title</Label>
+                  <Input
+                    id="menu_title"
+                    value={contentData.menu_title}
+                    onChange={(e) => setContentData({...contentData, menu_title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="menu_description">Menu Description</Label>
+                  <Textarea
+                    id="menu_description"
+                    value={contentData.menu_description}
+                    onChange={(e) => setContentData({...contentData, menu_description: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">About Section</h3>
+                <div>
+                  <Label htmlFor="about_title">About Title</Label>
+                  <Input
+                    id="about_title"
+                    value={contentData.about_title}
+                    onChange={(e) => setContentData({...contentData, about_title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="about_description">About Description</Label>
+                  <Textarea
+                    id="about_description"
+                    value={contentData.about_description}
+                    onChange={(e) => setContentData({...contentData, about_description: e.target.value})}
+                    rows={4}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Contact Information</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="contact_phone1">Phone 1</Label>
+                    <Input
+                      id="contact_phone1"
+                      value={contentData.contact_phone1}
+                      onChange={(e) => setContentData({...contentData, contact_phone1: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact_phone2">Phone 2</Label>
+                    <Input
+                      id="contact_phone2"
+                      value={contentData.contact_phone2}
+                      onChange={(e) => setContentData({...contentData, contact_phone2: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact_email1">Email 1</Label>
+                    <Input
+                      id="contact_email1"
+                      type="email"
+                      value={contentData.contact_email1}
+                      onChange={(e) => setContentData({...contentData, contact_email1: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact_email2">Email 2</Label>
+                    <Input
+                      id="contact_email2"
+                      type="email"
+                      value={contentData.contact_email2}
+                      onChange={(e) => setContentData({...contentData, contact_email2: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact_address1">Address Line 1</Label>
+                    <Input
+                      id="contact_address1"
+                      value={contentData.contact_address1}
+                      onChange={(e) => setContentData({...contentData, contact_address1: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contact_address2">Address Line 2</Label>
+                    <Input
+                      id="contact_address2"
+                      value={contentData.contact_address2}
+                      onChange={(e) => setContentData({...contentData, contact_address2: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Footer</h3>
+                <div>
+                  <Label htmlFor="footer_text">Footer Text</Label>
+                  <Input
+                    id="footer_text"
+                    value={contentData.footer_text}
+                    onChange={(e) => setContentData({...contentData, footer_text: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-2">
+                <Button type="submit" className="flex-1">
+                  Update Website Content
+                </Button>
+                <Button type="button" variant="outline" onClick={() => {
+                  setShowContentForm(false);
+                  setContentData(siteSettings);
                 }}>
                   Cancel
                 </Button>
