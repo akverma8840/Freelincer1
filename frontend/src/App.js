@@ -677,6 +677,29 @@ const AdminPanel = () => {
               </div>
             )}
           </TabsContent>
+
+          <TabsContent value="security">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Security Settings</h2>
+              <Button onClick={() => setShowPasswordForm(true)}>
+                <Edit2 className="h-4 w-4 mr-2" />
+                Change Password
+              </Button>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Admin Account</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p><strong>Username:</strong> admin</p>
+                <p><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Keep your admin password secure and change it regularly. You'll be logged out after changing your password.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Menu Item Dialog */}
