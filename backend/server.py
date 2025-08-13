@@ -138,7 +138,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
 
-# Initialize admin user on startup
+# Initialize admin user and default site settings on startup
 async def create_default_admin():
     admin_exists = await db.admin_users.find_one({"username": "admin"})
     if not admin_exists:
@@ -146,6 +146,13 @@ async def create_default_admin():
         admin_user = AdminUser(username="admin", hashed_password=hashed_password)
         await db.admin_users.insert_one(admin_user.dict())
         print("Default admin user created: admin/admin123")
+
+async def create_default_site_settings():
+    settings_exists = await db.site_settings.find_one({})
+    if not settings_exists:
+        default_settings = SiteSettings()
+        await db.site_settings.insert_one(default_settings.dict())
+        print("Default site settings created")
 
 # Public Routes
 @api_router.get("/")
